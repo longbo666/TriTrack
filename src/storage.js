@@ -17,7 +17,10 @@ function createStatusTemplate() {
   for (const phase of PHASES) {
     template[phase.key] = {};
     for (const platform of PLATFORMS) {
-      template[phase.key][platform.key] = phase.options[0];
+      template[phase.key][platform.key] = {
+        value: phase.options[0],
+        owner: "",
+      };
     }
   }
   return template;
@@ -37,8 +40,15 @@ function normalizeRequirement(raw = {}) {
       if (!phaseStatuses) continue;
       for (const platform of PLATFORMS) {
         const value = phaseStatuses[platform.key];
-        if (typeof value === "string" && value.trim()) {
-          normalized.statuses[phase.key][platform.key] = value;
+        if (typeof value === "string") {
+          normalized.statuses[phase.key][platform.key].value = value;
+        } else if (value && typeof value === "object") {
+          if (value.value) {
+            normalized.statuses[phase.key][platform.key].value = value.value;
+          }
+          if (typeof value.owner === "string") {
+            normalized.statuses[phase.key][platform.key].owner = value.owner;
+          }
         }
       }
     }

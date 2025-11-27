@@ -44,3 +44,13 @@ export const STATUS_COLORS = {
 
 export const STORAGE_KEY = "srbc_requirement_tracker_state_v2";
 export const LEGACY_STORAGE_KEYS = ["srbc_requirement_tracker"];
+
+export const OWNER_OPTIONS = [
+  "",
+  "黄华宏",
+  "黄志豪",
+  "陈嘉敏",
+  "陈成",
+  "龙波",
+  "曾祥锋",
+];

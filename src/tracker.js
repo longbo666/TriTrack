@@ -1,4 +1,4 @@
-import { PHASES, PLATFORMS, STATUS_COLORS } from "./constants.js";
+import { PHASES, PLATFORMS, STATUS_COLORS, OWNER_OPTIONS } from "./constants.js";
 import {
   createEmptyRequirement,
   createSampleRequirements,
@@ -51,7 +51,6 @@ export class RequirementTracker {
   }
 
   renderWorkspaceHeader() {
-    const current = this.getActiveWorkspace();
     const select = document.getElementById("workspaceSelect");
     if (!select) return;
     select.innerHTML = "";
@@ -64,6 +63,7 @@ export class RequirementTracker {
       }
       select.appendChild(option);
     });
+
   }
 
   renderTable() {
@@ -131,24 +131,47 @@ export class RequirementTracker {
       for (const platform of PLATFORMS) {
         const td = document.createElement("td");
         td.className = "status-cell";
-        const select = document.createElement("select");
+        const statusWrapper = document.createElement("div");
+        statusWrapper.className = "status-wrapper";
+        const statusData = item.statuses[phase.key][platform.key];
+
+        const statusSelect = document.createElement("select");
         phase.options.forEach((option) => {
           const opt = document.createElement("option");
           opt.value = option;
           opt.textContent = option;
-          if (item.statuses[phase.key][platform.key] === option) {
+          if (statusData.value === option) {
             opt.selected = true;
           }
-          select.appendChild(opt);
+          statusSelect.appendChild(opt);
         });
-        this.paintCell(td, phase.key, select.value);
-        select.addEventListener("change", (event) => {
+        statusSelect.addEventListener("change", (event) => {
           const { value } = event.target;
-          item.statuses[phase.key][platform.key] = value;
+          statusData.value = value;
           this.paintCell(td, phase.key, value);
           this.persist();
         });
-        td.appendChild(select);
+        statusWrapper.appendChild(statusSelect);
+
+        const ownerSelect = document.createElement("select");
+        ownerSelect.className = "owner-select";
+        OWNER_OPTIONS.forEach((owner) => {
+          const opt = document.createElement("option");
+          opt.value = owner;
+          opt.textContent = owner || "";
+          if (statusData.owner === owner) {
+            opt.selected = true;
+          }
+          ownerSelect.appendChild(opt);
+        });
+        ownerSelect.addEventListener("change", (event) => {
+          statusData.owner = event.target.value;
+          this.persist();
+        });
+        statusWrapper.appendChild(ownerSelect);
+
+        this.paintCell(td, phase.key, statusSelect.value);
+        td.appendChild(statusWrapper);
         tr.appendChild(td);
       }
     }
