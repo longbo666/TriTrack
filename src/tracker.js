@@ -92,10 +92,6 @@ export class RequirementTracker {
       }
     });
 
-    const actionTh = document.createElement("th");
-    actionTh.textContent = "操作";
-    actionTh.rowSpan = 2;
-    phaseRow.appendChild(actionTh);
 
     if (requirements.length === 0) {
       const emptyRow = document.createElement("tr");
@@ -114,6 +110,7 @@ export class RequirementTracker {
 
   renderRow(item) {
     const tr = document.createElement("tr");
+    tr.className = "requirement-row";
 
     const nameTd = document.createElement("td");
     nameTd.className = "name-cell";
@@ -125,6 +122,17 @@ export class RequirementTracker {
       this.persist();
     });
     nameTd.appendChild(textarea);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "row-delete";
+    deleteBtn.setAttribute("aria-label", "删除需求");
+    deleteBtn.innerHTML = "&minus;";
+    deleteBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      this.deleteRequirement(item.id);
+    });
+    nameTd.appendChild(deleteBtn);
     tr.appendChild(nameTd);
 
     for (const phase of PHASES) {
@@ -175,14 +183,6 @@ export class RequirementTracker {
         tr.appendChild(td);
       }
     }
-
-    const actionTd = document.createElement("td");
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "删除";
-    deleteBtn.className = "danger";
-    deleteBtn.addEventListener("click", () => this.deleteRequirement(item.id));
-    actionTd.appendChild(deleteBtn);
-    tr.appendChild(actionTd);
 
     return tr;
   }

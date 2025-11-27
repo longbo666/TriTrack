@@ -166,10 +166,15 @@ tbody tr:hover {
 }
 
 
+
+.requirement-row {
+  position: relative;
+}
+
 .name-cell {
   min-width: 10em;
   padding: 0;
-  /* border: none; */
+  position: relative;
 }
 
 .name-cell textarea {
@@ -184,6 +189,33 @@ tbody tr:hover {
   font-family: inherit;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.row-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(220, 38, 38, 0.14);
+  color: #b91c1c;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  transform: scale(0.7);
+}
+
+.requirement-row:hover .row-delete,
+.row-delete:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
 }
 
 select {
