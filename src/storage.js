@@ -192,3 +192,34 @@ export function importState(jsonString) {
   const parsed = JSON.parse(jsonString);
   return normalizeState(parsed);
 }
+
+export function exportWorkspace(workspace) {
+  if (!workspace) {
+    throw new Error("无法导出：工作空间不存在");
+  }
+  const payload = {
+    name: workspace.name || "未命名工作空间",
+    requirements: workspace.requirements || [],
+  };
+  return JSON.stringify(payload, null, 2);
+}
+
+export function importWorkspacePayload(jsonString) {
+  const parsed = JSON.parse(jsonString);
+  if (Array.isArray(parsed?.workspaces)) {
+    return { type: "state", state: normalizeState(parsed) };
+  }
+  if (Array.isArray(parsed)) {
+    return {
+      type: "workspace",
+      workspace: createWorkspace("导入工作空间", parsed),
+    };
+  }
+  if (parsed && Array.isArray(parsed.requirements)) {
+    return {
+      type: "workspace",
+      workspace: createWorkspace(parsed.name || "导入工作空间", parsed.requirements),
+    };
+  }
+  throw new Error("数据格式不正确：缺少 requirements 字段");
+}

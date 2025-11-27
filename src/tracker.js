@@ -5,8 +5,8 @@ import {
   createWorkspace,
   loadState,
   saveState,
-  exportState,
-  importState,
+  exportWorkspace,
+  importWorkspacePayload,
 } from "./storage.js";
 
 export class RequirementTracker {
@@ -52,11 +52,6 @@ export class RequirementTracker {
 
   renderWorkspaceHeader() {
     const current = this.getActiveWorkspace();
-    const titleEl = document.getElementById("workspaceName");
-    if (titleEl) {
-      titleEl.textContent = current?.name || "未命名空间";
-    }
-
     const select = document.getElementById("workspaceSelect");
     if (!select) return;
     select.innerHTML = "";
@@ -262,13 +257,15 @@ export class RequirementTracker {
   }
 
   exportData() {
-    const content = exportState(this.state);
+    const workspace = this.getActiveWorkspace();
+    const content = exportWorkspace(workspace);
     const blob = new Blob([content], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const safeName = (workspace?.name || "工作空间").replace(/\s+/g, "");
     a.href = url;
-    a.download = `需求跟进工作空间-${timestamp}.json`;
+    a.download = `${safeName || "工作空间"}-${timestamp}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -280,11 +277,20 @@ export class RequirementTracker {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const nextState = importState(reader.result);
-        this.state = nextState;
-        this.ensureWorkspaceAvailability();
+        const payload = importWorkspacePayload(reader.result);
+        if (payload.type === "state") {
+          this.state = payload.state;
+          this.ensureWorkspaceAvailability();
+          this.persist();
+          alert("已导入完整的工作空间集合");
+          this.render();
+          return;
+        }
+        const workspace = this.getActiveWorkspace();
+        workspace.name = payload.workspace.name || workspace.name;
+        workspace.requirements = payload.workspace.requirements || [];
         this.persist();
-        alert("导入成功！");
+        alert("当前工作空间已覆盖为导入数据");
         this.render();
       } catch (error) {
         console.error("导入失败", error);

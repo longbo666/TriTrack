@@ -44,16 +44,17 @@ h1 {
   margin-bottom: 12px;
 }
 
-.workspace-title h1 {
-  margin: 4px 0 0 0;
-  font-size: 1.6rem;
+.workspace-title {
+  flex: 1;
 }
 
-.workspace-label {
-  font-size: 0.85rem;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+.workspace-select {
+  font-size: 1.4rem;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  min-width: 240px;
 }
 
 .workspace-controls {
