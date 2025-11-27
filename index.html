@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>需求跟进看板</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="workspace-header">
+        <div class="workspace-title">
+          <span class="workspace-label">当前工作空间</span>
+          <h1 id="workspaceName">-</h1>
+        </div>
+        <div class="workspace-controls">
+          <select id="workspaceSelect"></select>
+          <div class="workspace-actions">
+            <button class="ghost" id="addWorkspace">新增</button>
+            <button class="ghost" id="renameWorkspace">重命名</button>
+            <button class="ghost danger-text" id="deleteWorkspace">删除</button>
+          </div>
+          <div class="workspace-utilities">
+            <input type="file" id="importInput" accept="application/json" hidden />
+            <button class="ghost" id="importBtn">导入</button>
+            <button class="ghost" id="exportBtn">导出</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrapper" id="tableContainer"></div>
+
+      <div class="table-footer">
+        <button id="addRequirement" class="ghost add-row">＋ 新增需求</button>
+      </div>
+    </div>
+
+    <template id="tableTemplate">
+      <table>
+        <thead>
+          <tr id="phaseRow">
+            <th rowspan="2" style="min-width: 180px">需求名称</th>
+          </tr>
+          <tr id="platformRow"></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </template>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
