@@ -205,8 +205,27 @@ select {
 }
 
 .owner-select {
-  font-weight: 500;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
   font-size: 0.85rem;
+  font-weight: 500;
+  background: #fff;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23555' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 0;
+  padding-right: 1.8rem;
+  transition: background-size 0.15s ease;
+}
+
+.owner-select:hover,
+.owner-select:focus-visible {
+  background-size: 0.7rem;
 }
 
 /* removed owner chip/popover styles */
