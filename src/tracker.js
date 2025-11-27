@@ -14,6 +14,16 @@ export class RequirementTracker {
     this.container = container;
     this.state = loadState();
     this.ensureWorkspaceAvailability();
+    this.columnHeaders = new Map();
+    this.highlightedRows = [];
+    this.highlightedHeaders = [];
+    this.indicator = document.getElementById("cellIndicator");
+    this.container.addEventListener("mouseover", (event) =>
+      this.handleCellHover(event)
+    );
+    this.container.addEventListener("mouseleave", () =>
+      this.clearHighlight()
+    );
     this.render();
   }
 
@@ -67,6 +77,7 @@ export class RequirementTracker {
   }
 
   renderTable() {
+    this.clearHighlight();
     const workspace = this.getActiveWorkspace();
     const requirements = workspace?.requirements || [];
 
@@ -78,6 +89,12 @@ export class RequirementTracker {
     const phaseRow = tableFragment.querySelector("#phaseRow");
     const platformRow = tableFragment.querySelector("#platformRow");
     const body = tableFragment.querySelector("#tableBody");
+    this.columnHeaders = new Map();
+    const nameHeader = phaseRow.querySelector("th");
+    if (nameHeader) {
+      nameHeader.dataset.colKey = "name";
+      this.columnHeaders.set("name", nameHeader);
+    }
 
     PHASES.forEach((phase) => {
       const phaseTh = document.createElement("th");
@@ -88,6 +105,9 @@ export class RequirementTracker {
       for (const platform of PLATFORMS) {
         const platformTh = document.createElement("th");
         platformTh.textContent = platform.label;
+        const colKey = `${phase.key}-${platform.key}`;
+        platformTh.dataset.colKey = colKey;
+        this.columnHeaders.set(colKey, platformTh);
         platformRow.appendChild(platformTh);
       }
     });
@@ -96,24 +116,35 @@ export class RequirementTracker {
     if (requirements.length === 0) {
       const emptyRow = document.createElement("tr");
       const emptyCell = document.createElement("td");
-      emptyCell.colSpan = PLATFORMS.length * PHASES.length + 2;
+      emptyCell.colSpan = PLATFORMS.length * PHASES.length + 1;
       emptyCell.className = "empty-tip";
       emptyCell.textContent = "暂无需求，点击上方“新增需求”开始";
       emptyRow.appendChild(emptyCell);
       body.appendChild(emptyRow);
     } else {
-      requirements.forEach((item) => body.appendChild(this.renderRow(item)));
+      requirements.forEach((item, index) =>
+        body.appendChild(this.renderRow(item, index))
+      );
     }
 
     this.container.appendChild(tableFragment);
   }
 
-  renderRow(item) {
+  renderRow(item, rowIndex) {
     const tr = document.createElement("tr");
     tr.className = "requirement-row";
+    tr.dataset.rowId = String(rowIndex);
+
+    const rowLabel = item.name?.trim()
+      ? item.name.trim()
+      : `第${rowIndex + 1}条需求`;
 
     const nameTd = document.createElement("td");
     nameTd.className = "name-cell";
+    nameTd.dataset.rowId = String(rowIndex);
+    nameTd.dataset.rowLabel = rowLabel;
+    nameTd.dataset.colKey = "name";
+    nameTd.dataset.colLabel = "需求名称";
     const textarea = document.createElement("textarea");
     textarea.placeholder = "请输入需求名称，可换行";
     textarea.value = item.name;
@@ -139,6 +170,11 @@ export class RequirementTracker {
       for (const platform of PLATFORMS) {
         const td = document.createElement("td");
         td.className = "status-cell";
+        td.dataset.rowId = String(rowIndex);
+        td.dataset.rowLabel = rowLabel;
+        const colKey = `${phase.key}-${platform.key}`;
+        td.dataset.colKey = colKey;
+        td.dataset.colLabel = `${platform.label} · ${phase.label}`;
         const statusWrapper = document.createElement("div");
         statusWrapper.className = "status-wrapper";
         const statusData = item.statuses[phase.key][platform.key];
@@ -185,6 +221,55 @@ export class RequirementTracker {
     }
 
     return tr;
+  }
+
+  handleCellHover(event) {
+    const cell = event.target.closest("td, th");
+    if (!cell || !this.container.contains(cell)) return;
+    if (!cell.dataset.rowId && !cell.dataset.colKey) return;
+    if (cell.tagName === "TH" && !cell.dataset.colKey) return;
+    this.applyHighlight(cell);
+  }
+
+  applyHighlight(cell) {
+    this.clearHighlight(false);
+
+    const rowId = cell.dataset.rowId;
+    if (rowId) {
+      this.highlightedRows = Array.from(
+        this.container.querySelectorAll(`tr[data-row-id="${rowId}"]`)
+      );
+      this.highlightedRows.forEach((row) => row.classList.add("row-highlight"));
+    }
+
+    const colKeys = this.extractColKeys(cell);
+    this.highlightedHeaders = [];
+    colKeys.forEach((key) => {
+      const header = this.columnHeaders.get(key);
+      if (header) {
+        header.classList.add("col-highlight");
+        this.highlightedHeaders.push(header);
+      }
+    });
+
+    const rowLabel = cell.dataset.rowLabel || (rowId ? `第${Number(rowId) + 1}行` : "");
+    const colLabel = cell.dataset.colLabel || this.resolveColumnLabel(colKeys);
+    this.showIndicator(cell, rowLabel, colLabel);
+  }
+
+  extractColKeys(cell) {
+    if (cell.dataset.colKey) return [cell.dataset.colKey];
+    return [];
+  }
+
+  resolveColumnLabel(colKeys) {
+    if (!colKeys || colKeys.length === 0) return "";
+    const firstKey = colKeys[0];
+    const match = Array.from(this.columnHeaders.entries()).find(
+      ([key]) => key === firstKey
+    );
+    if (match) return match[1].textContent || "";
+    return "";
   }
 
   paintCell(cell, phaseKey, statusValue) {
@@ -321,5 +406,34 @@ export class RequirementTracker {
       }
     };
     reader.readAsText(file, "utf-8");
+  }
+
+  showIndicator(cell, rowLabel, colLabel) {
+    if (!this.indicator) return;
+    const parts = [];
+    if (rowLabel) parts.push(rowLabel);
+    if (colLabel) parts.push(colLabel);
+    const text = parts.join(" · ");
+    if (!text) {
+      this.indicator.hidden = true;
+      return;
+    }
+    this.indicator.textContent = text;
+    this.indicator.hidden = false;
+    const rect = cell.getBoundingClientRect();
+    this.indicator.style.top = `${rect.top + window.scrollY - 32}px`;
+    this.indicator.style.left = `${rect.left + window.scrollX}px`;
+  }
+
+  clearHighlight(hideIndicator = true) {
+    this.highlightedRows.forEach((row) => row.classList.remove("row-highlight"));
+    this.highlightedHeaders.forEach((header) =>
+      header.classList.remove("col-highlight")
+    );
+    this.highlightedRows = [];
+    this.highlightedHeaders = [];
+    if (hideIndicator && this.indicator) {
+      this.indicator.hidden = true;
+    }
   }
 }
