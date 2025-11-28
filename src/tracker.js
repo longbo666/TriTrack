@@ -12,8 +12,7 @@ import {
 export class RequirementTracker {
   constructor(container) {
     this.container = container;
-    this.state = loadState();
-    this.ensureWorkspaceAvailability();
+    this.state = null;
     this.columnHeaders = new Map();
     this.highlightedRows = [];
     this.highlightedHeaders = [];
@@ -24,26 +23,35 @@ export class RequirementTracker {
     this.container.addEventListener("mouseleave", () =>
       this.clearHighlight()
     );
+  }
+
+  async init() {
+    this.state = await loadState();
+    const changed = this.ensureWorkspaceAvailability();
+    if (changed) {
+      await this.persist();
+    }
     this.render();
   }
 
   ensureWorkspaceAvailability() {
+    let changed = false;
     if (!Array.isArray(this.state.workspaces) || this.state.workspaces.length === 0) {
       const fallback = createWorkspace("默认工作空间", []);
       this.state = {
         activeWorkspaceId: fallback.id,
         workspaces: [fallback],
       };
-      saveState(this.state);
-      return;
+      changed = true;
     }
     if (
       !this.state.activeWorkspaceId ||
       !this.state.workspaces.some((ws) => ws.id === this.state.activeWorkspaceId)
     ) {
       this.state.activeWorkspaceId = this.state.workspaces[0].id;
-      saveState(this.state);
+      changed = true;
     }
+    return changed;
   }
 
   getActiveWorkspace() {
@@ -51,11 +59,17 @@ export class RequirementTracker {
     return this.state.workspaces.find((ws) => ws.id === this.state.activeWorkspaceId);
   }
 
-  persist() {
-    saveState(this.state);
+  async persist() {
+    try {
+      await saveState(this.state);
+    } catch (error) {
+      console.error("保存失败", error);
+      alert("保存失败，请稍后重试");
+    }
   }
 
   render() {
+    if (!this.state) return;
     this.renderWorkspaceHeader();
     this.renderTable();
   }
@@ -180,6 +194,8 @@ export class RequirementTracker {
         const statusData = item.statuses[phase.key][platform.key];
 
         const statusSelect = document.createElement("select");
+        statusSelect.dataset.rowId = String(rowIndex);
+        statusSelect.dataset.colKey = colKey;
         phase.options.forEach((option) => {
           const opt = document.createElement("option");
           opt.value = option;
@@ -192,8 +208,9 @@ export class RequirementTracker {
         statusSelect.addEventListener("change", (event) => {
           const { value } = event.target;
           statusData.value = value;
-          this.paintCell(td, phase.key, value);
+          this.paintCell(td, phase.key, value, platform.key, item.statuses);
           this.persist();
+          this.updateRowColors(rowIndex);
         });
         statusWrapper.appendChild(statusSelect);
 
@@ -214,7 +231,7 @@ export class RequirementTracker {
         });
         statusWrapper.appendChild(ownerSelect);
 
-        this.paintCell(td, phase.key, statusSelect.value);
+        this.paintCell(td, phase.key, statusSelect.value, platform.key, item.statuses);
         td.appendChild(statusWrapper);
         tr.appendChild(td);
       }
@@ -272,8 +289,28 @@ export class RequirementTracker {
     return "";
   }
 
-  paintCell(cell, phaseKey, statusValue) {
-    const colors = STATUS_COLORS[phaseKey]?.[statusValue];
+  paintCell(cell, phaseKey, statusValue, platformKey, rowStatuses) {
+    let colors = STATUS_COLORS[phaseKey]?.[statusValue];
+
+    if (rowStatuses && platformKey) {
+      const developmentStatus = rowStatuses.development?.[platformKey]?.value;
+      const testingStatus = rowStatuses.testing?.[platformKey]?.value;
+      if (phaseKey === "testing" && developmentStatus === "已完成") {
+        if (statusValue === "未送测") {
+          colors = { bg: "#fee2e2", text: "#991b1b" };
+        } else if (statusValue === "已送测") {
+          colors = { bg: "#fef9c3", text: "#854d0e" };
+        }
+      }
+      if (phaseKey === "production" && testingStatus === "已出报告") {
+        if (statusValue === "未发起") {
+          colors = { bg: "#fee2e2", text: "#991b1b" };
+        } else if (statusValue === "审批中") {
+          colors = { bg: "#fef9c3", text: "#854d0e" };
+        }
+      }
+    }
+
     if (colors) {
       cell.style.backgroundColor = colors.bg;
       cell.style.color = colors.text;
@@ -406,6 +443,27 @@ export class RequirementTracker {
       }
     };
     reader.readAsText(file, "utf-8");
+  }
+
+  updateRowColors(rowIndex) {
+    const index = typeof rowIndex === "number" ? rowIndex : Number(rowIndex);
+    if (Number.isNaN(index)) return;
+    const workspace = this.getActiveWorkspace();
+    const row = workspace.requirements[index];
+    if (!row) return;
+    const cells = this.container.querySelectorAll(
+      `td.status-cell[data-row-id="${index}"]`
+    );
+    cells.forEach((cell) => {
+      const colKey = cell.dataset.colKey;
+      if (!colKey) return;
+      const [phaseKey, platformKey] = colKey.split("-");
+      if (!phaseKey || !platformKey) return;
+      const statusValue = row.statuses?.[phaseKey]?.[platformKey]?.value;
+      if (statusValue) {
+        this.paintCell(cell, phaseKey, statusValue, platformKey, row.statuses);
+      }
+    });
   }
 
   showIndicator(cell, rowLabel, colLabel) {

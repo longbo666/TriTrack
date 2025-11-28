@@ -1,9 +1,4 @@
-import {
-  PHASES,
-  PLATFORMS,
-  STORAGE_KEY,
-  LEGACY_STORAGE_KEYS,
-} from "./constants.js";
+import { PHASES, PLATFORMS } from "./constants.js";
 
 function generateId() {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -127,16 +122,6 @@ function createInitialState() {
   };
 }
 
-function readRawState() {
-  const primary = localStorage.getItem(STORAGE_KEY);
-  if (primary) return primary;
-  for (const key of LEGACY_STORAGE_KEYS || []) {
-    const legacy = localStorage.getItem(key);
-    if (legacy) return legacy;
-  }
-  return null;
-}
-
 function normalizeState(data) {
   if (Array.isArray(data)) {
     const workspace = createWorkspace("默认工作空间", data);
@@ -176,22 +161,36 @@ function normalizeState(data) {
   };
 }
 
-export function loadState() {
-  const raw = readRawState();
-  if (!raw) {
-    return createInitialState();
-  }
+export async function loadState() {
   try {
-    const parsed = JSON.parse(raw);
-    return normalizeState(parsed);
+    const response = await fetch("/api/state", {
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error(`加载失败：${response.status}`);
+    }
+    const data = await response.json();
+    return normalizeState(data);
   } catch (error) {
-    console.error("解析本地数据失败，已恢复默认数据", error);
+    console.error("从服务端加载数据失败，使用默认数据", error);
     return createInitialState();
   }
 }
 
-export function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+export async function saveState(state) {
+  try {
+    const response = await fetch("/api/state", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state),
+    });
+    if (!response.ok) {
+      throw new Error(`保存失败：${response.status}`);
+    }
+  } catch (error) {
+    console.error("保存到服务端失败", error);
+    throw error;
+  }
 }
 
 export function exportState(state) {

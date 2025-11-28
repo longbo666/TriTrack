@@ -1,0 +1,448 @@
+{
+  "activeWorkspaceId": "id-1764294057846-9b1894644f942",
+  "workspaces": [
+    {
+      "id": "id-1764294057846-9b1894644f942",
+      "name": "手机银行需求跟踪",
+      "requirements": [
+        {
+          "id": "4614a186-e8ed-42e8-b807-5f458cbe4bcf",
+          "name": "【XQ-2025-06-30-036】\n增加清理缓存相关插件",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已完成",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "已出报告",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已出报告",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "未送测",
+                "owner": "曾祥锋"
+              }
+            },
+            "production": {
+              "android": {
+                "value": "已投产",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已投产",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "未发起",
+                "owner": ""
+              }
+            }
+          }
+        },
+        {
+          "id": "f6a43928-ce6a-4143-9c4a-8e06932e52b6",
+          "name": "【XQ-2024-05-17-002】\n鸿蒙英文版",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "无需",
+                "owner": ""
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已完成",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "无需",
+                "owner": ""
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已送测",
+                "owner": "黄华宏"
+              }
+            },
+            "production": {
+              "android": {
+                "value": "无需",
+                "owner": ""
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "未发起",
+                "owner": ""
+              }
+            }
+          }
+        },
+        {
+          "id": "9c4270cd-fc62-4726-bc34-828e8f51f7d3",
+          "name": "【XQ-2025-07-21-031】\n“撤销已同意的隐私政策”功能",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已完成",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "已出报告",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已出报告",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已出报告",
+                "owner": ""
+              }
+            },
+            "production": {
+              "android": {
+                "value": "已投产",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已投产",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "未发起",
+                "owner": "曾祥锋"
+              }
+            }
+          }
+        },
+        {
+          "id": "41af4d96-95e7-46a7-a986-acec0915ca4b",
+          "name": "【XQ-2025-09-09-017】\n神策展示过期banner的问题",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "无需",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "已送测",
+                "owner": "陈嘉敏"
+              },
+              "ios": {
+                "value": "已送测",
+                "owner": "陈嘉敏"
+              },
+              "harmony": {
+                "value": "无需",
+                "owner": ""
+              }
+            },
+            "production": {
+              "android": {
+                "value": "未发起",
+                "owner": ""
+              },
+              "ios": {
+                "value": "未发起",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "无需",
+                "owner": ""
+              }
+            }
+          }
+        },
+        {
+          "id": "82cf3cee-fb92-485a-a4cb-90c88087795c",
+          "name": "【XQ-2025-07-15-032】\n神策新增埋点",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已完成",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "已送测",
+                "owner": "黄志豪"
+              },
+              "ios": {
+                "value": "已送测",
+                "owner": "黄志豪"
+              },
+              "harmony": {
+                "value": "已送测",
+                "owner": "黄志豪"
+              }
+            },
+            "production": {
+              "android": {
+                "value": "未发起",
+                "owner": ""
+              },
+              "ios": {
+                "value": "未发起",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "无需",
+                "owner": ""
+              }
+            }
+          }
+        },
+        {
+          "id": "7ec3f26a-0de8-46be-9752-51de6d81275b",
+          "name": "【XQ-2025-07-08-012】\n蓝牙KEY定位权限",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "无需",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "已出报告",
+                "owner": ""
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "无需",
+                "owner": ""
+              }
+            },
+            "production": {
+              "android": {
+                "value": "未发起",
+                "owner": "黄华宏"
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "无需",
+                "owner": ""
+              }
+            }
+          }
+        },
+        {
+          "id": "c96f32ff-b1a7-445e-9584-f27cf73aa38e",
+          "name": "【XQ-2025-09-09-017】\n邦盛设备指纹",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "ios": {
+                "value": "已完成",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已完成",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "已送测",
+                "owner": "陈嘉敏"
+              },
+              "ios": {
+                "value": "已送测",
+                "owner": "陈嘉敏"
+              },
+              "harmony": {
+                "value": "已出报告",
+                "owner": ""
+              }
+            },
+            "production": {
+              "android": {
+                "value": "未发起",
+                "owner": ""
+              },
+              "ios": {
+                "value": "未发起",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已投产",
+                "owner": ""
+              }
+            }
+          }
+        },
+        {
+          "id": "1b820cec-4ce7-445b-9ccd-d6379af46f4a",
+          "name": "【 XQ-2025-04-14-015】\n桌面组件",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "开发中",
+                "owner": "陈嘉敏"
+              },
+              "ios": {
+                "value": "开发中",
+                "owner": "黄志豪"
+              },
+              "harmony": {
+                "value": "排队中",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "已送测",
+                "owner": "陈嘉敏"
+              },
+              "ios": {
+                "value": "已送测",
+                "owner": "陈嘉敏"
+              },
+              "harmony": {
+                "value": "未送测",
+                "owner": ""
+              }
+            },
+            "production": {
+              "android": {
+                "value": "未发起",
+                "owner": ""
+              },
+              "ios": {
+                "value": "未发起",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "未发起",
+                "owner": ""
+              }
+            }
+          }
+        },
+        {
+          "id": "75db4b1d-5dbc-4807-bf3d-637ab0c170c7",
+          "name": "【XQ-2025-09-05-008】\n基金私募鸿蒙pdf和type",
+          "statuses": {
+            "development": {
+              "android": {
+                "value": "无需",
+                "owner": ""
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已完成",
+                "owner": ""
+              }
+            },
+            "testing": {
+              "android": {
+                "value": "无需",
+                "owner": ""
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "已送测",
+                "owner": "曾祥锋"
+              }
+            },
+            "production": {
+              "android": {
+                "value": "无需",
+                "owner": ""
+              },
+              "ios": {
+                "value": "无需",
+                "owner": ""
+              },
+              "harmony": {
+                "value": "未发起",
+                "owner": "曾祥锋"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "id-1764294057846-f7592f792e8a4",
+      "name": "B项目",
+      "requirements": []
+    }
+  ]
+}

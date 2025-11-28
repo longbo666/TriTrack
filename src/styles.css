@@ -189,7 +189,7 @@ tbody tr:hover {
 .name-cell textarea {
   width: 100%;
   min-height: 60px;
-  padding: 8px 44px 8px 10px;
+  padding: 8px 10px 8px 10px;
   border-radius: 8px;
   border: 0;
   font-size: 0.95rem;
