@@ -7,7 +7,7 @@ import {
 const BLOB_PATH = process.env.STATE_BLOB_PATH || "tritrack/state.json";
 
 export const config = {
-  runtime: "nodejs20.x",
+  runtime: "nodejs",
 };
 
 export default async function handler(req, res) {
