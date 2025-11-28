@@ -1,0 +1,12 @@
+{
+  "name": "tritrack",
+  "version": "1.0.0",
+  "description": "Workspace tracker for multi-platform requirements",
+  "type": "module",
+  "scripts": {
+    "local": "vercel dev --listen 4173"
+  },
+  "dependencies": {
+    "@vercel/blob": "^0.20.0"
+  }
+}

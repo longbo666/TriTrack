@@ -1,16 +1,18 @@
 #!/bin/zsh
 cd "$(dirname "$0")" || exit 1
 
-PORT=${PORT:-4173}
-HOST=${HOST:-0.0.0.0}
-
-echo "正在启动需求跟进看板，端口 ${PORT}..."
-PORT=$PORT HOST=$HOST node server.js &
-SERVER_PID=$!
-
-sleep 1
-if command -v open >/dev/null 2>&1; then
-  open "http://localhost:${PORT}/index.html"
+if ! command -v vercel >/dev/null 2>&1; then
+  echo "请先安装 Vercel CLI：npm i -g vercel"
+  exit 1
 fi
 
-wait $SERVER_PID
+if [ ! -f package.json ]; then
+  echo "缺少 package.json，请确认仓库完整"
+  exit 1
+fi
+
+npm install >/tmp/tritrack_npm.log 2>&1
+
+PORT=${PORT:-4173}
+echo "使用 vercel dev 启动本地环境，端口 ${PORT}" 
+vercel dev --listen "$PORT"
